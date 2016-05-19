@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace PasswordKata
 {
     /// <summary>
-    /// Class for Password Verification
+    /// Class for verifying the password 
     /// </summary>
     public class PasswordVerifier
     {
@@ -13,7 +13,6 @@ namespace PasswordKata
         {
             this._password = password;
         }
-
         private Regex RegUppercaseCharacterMatcher = new Regex("[A-Z]");
         private Regex RegLowercaseCharacterMatcher = new Regex("[a-z]");
         private Regex RegDigitsMatcher = new Regex("[0-9]");
@@ -24,43 +23,60 @@ namespace PasswordKata
         /// <returns></returns>
         public bool Verify()
         {
-            bool bFlag = false;
+            string strMsg = string.Empty;
+            int iCount = 0;
             try
             {
-                //Check if password null/empty
-                if (System.String.IsNullOrEmpty(_password))
-                     Ensure.ArgumentCondition(false, "Password cannot be null or empty", _password);
-                //Check if password length greater than 8
-                if (_password.Trim().Length <8)
-                    Ensure.ArgumentCondition(false, "Password Length less than 8", _password);
-                //Checks if password contain atleast one Upper case letter
-                if (RegUppercaseCharacterMatcher.Matches(_password).Count < 1)
-                    Ensure.ArgumentCondition(false, "Uppercase letter not Present in Password", _password);
-                //Checks if password contain atleast one Lower case letter
-                if (RegLowercaseCharacterMatcher.Matches(_password).Count < 1)
-                    Ensure.ArgumentCondition(false, "Lowercase letter not Present in Password", _password);
-                //Checks if password contain atleast one Digit
-                if (RegDigitsMatcher.Matches(_password).Count < 1)
-                    Ensure.ArgumentCondition(false, "No Digits Present in Password", _password);
+                // Check if password not null or empty 
+                if (!(System.String.IsNullOrEmpty(_password)))
+                    ++iCount;
                 else
-                {
-                    bFlag = true;
-                }
-                 
-                return bFlag;
+                    strMsg += "Password cannot be empty ";
+
+                //Check if password length greater than eight
+                if (_password.Trim().Length > 8)
+                    ++iCount;
+                else
+                    strMsg += " And length less than eight ";
+
+                //Check if password has atleast one upper case letter
+                if (RegUppercaseCharacterMatcher.Matches(_password).Count >= 1)
+                    ++iCount;
+                else
+                    strMsg += " Or should containt atleast one Upper Case letter ";
+
+                // Check if password has atleast one lower case letter
+                if (RegLowercaseCharacterMatcher.Matches(_password).Count >= 1)
+                    ++iCount;
+                else
+                    strMsg += " Or should containt atleast one Lower Case letter ";
+
+                // Check if password has atleast one digit
+                if (RegDigitsMatcher.Matches(_password).Count >= 1)
+                    ++iCount;
+                else
+                    strMsg += " Or should containt atleast one Digit ";
+                //Check if atleast 3 of criteria are matching in the provided password
+                if (iCount > 3)
+                    return true;
+                else
+                    Ensure.ArgumentCondition(false, strMsg, _password);
+                return false;
             }
 
             catch
             {
-                return bFlag;
+                return false;
 
             }
-
         }
 
     }
 
 }
+
+
+
 
 
 

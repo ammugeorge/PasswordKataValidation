@@ -12,6 +12,7 @@ namespace PasswordKata
         public PasswordVerifier(string password)
         {
             this._password = password;
+
         }
         private Regex RegUppercaseCharacterMatcher = new Regex("[A-Z]");
         private Regex RegLowercaseCharacterMatcher = new Regex("[a-z]");
@@ -27,23 +28,24 @@ namespace PasswordKata
             int iCount = 0;
             try
             {
-                // Check if password not null or empty 
-                if (!(System.String.IsNullOrEmpty(_password)))
-                    ++iCount;
+                // Check if password not null or empty atleast and contain atleast one upper case letter
+                if ((!(System.String.IsNullOrEmpty(_password))) && (RegUppercaseCharacterMatcher.Matches(_password).Count >= 1))
+                {
+                    iCount = iCount + 2;
+                }
                 else
-                    strMsg += "Password cannot be empty ";
+                {
+                    Ensure.ArgumentCondition(false, "Password Cannot be Null And Should Contain Aleast One Uppercase ", _password);
+
+                }
 
                 //Check if password length greater than eight
                 if (_password.Trim().Length > 8)
                     ++iCount;
                 else
-                    strMsg += " And length less than eight ";
+                    strMsg += " Password length less than eight ";
 
-                //Check if password has atleast one upper case letter
-                if (RegUppercaseCharacterMatcher.Matches(_password).Count >= 1)
-                    ++iCount;
-                else
-                    strMsg += " Or should containt atleast one Upper Case letter ";
+
 
                 // Check if password has atleast one lower case letter
                 if (RegLowercaseCharacterMatcher.Matches(_password).Count >= 1)
@@ -63,14 +65,13 @@ namespace PasswordKata
                     Ensure.ArgumentCondition(false, strMsg, _password);
                 return false;
             }
-
             catch
             {
+                //Write code to show error to user or log for tracking if required at a later stage
                 return false;
 
             }
         }
-
     }
 
 }
